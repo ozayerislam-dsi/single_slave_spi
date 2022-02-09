@@ -61,7 +61,6 @@ module spi_master_tb;
         cs = 1;
         miso = 0;
 
-        // set clk_div , and out by out_data
         #40;
         in_data = 8'haa;
         wr = 1;
@@ -73,6 +72,7 @@ module spi_master_tb;
         cs = 1;
 
         #360 ;
+        rd = 0;
         wr = 1;
         cs = 0;
         in_data = 8'h91;
@@ -80,8 +80,9 @@ module spi_master_tb;
         #20 ;
         wr = 0;
         cs = 1;
-        
+
         #360 ;
+        rd = 0;
         wr = 1;
         cs = 0;
         in_data = 8'hf0;
@@ -91,6 +92,7 @@ module spi_master_tb;
         cs = 1;
 
         #360 ;
+        rd = 0;
         wr = 1;
         cs = 0;
         in_data = 8'h12;
@@ -98,6 +100,7 @@ module spi_master_tb;
         #20 ;
         wr = 0;
         cs = 1;
+
     end
 
     // define clock

@@ -47,9 +47,9 @@ module spi_master(
     // the port of module links internal buffer
     assign sclk = sclk_buf;
     assign mosi = mosi_buf;
-
-    //sclk positive edge read data into out-shift register from miso , implement read operation
-    always @(posedge sclk_buf) begin
+    
+    //sclk negetive edge read data into out-shift register from miso , implement read operation
+    always @(negedge sclk_buf) begin
         out_buf[0] <= miso;
         out_buf <= out_buf << 1;
     end 
@@ -62,7 +62,7 @@ module spi_master(
         end
     end
     
-    // sclk negetive edge write data to mosi
+    // sclk positive edge write data to mosi
     always @(posedge clk) begin
         if (!busy) begin // idle state load data into send buffer
             if(!cs && wr) begin // When cs is low and wr is high
@@ -76,14 +76,12 @@ module spi_master(
             end
         end
         else begin // when 8-bits data is written into buffer , send it bit by bit in MOSI
-                if (cnt % 2 == 0) begin // when sclk_buf is negitive , shift data into mosi buffer
+                if (cnt % 2 != 0) begin // when sclk_buf is positive , shift data into mosi buffer
                     mosi_buf <= in_buf[7];
                     in_buf <= in_buf << 1;
-                    $display("Reached at cnt mod 2 logic, mosi_buf = %h, in_buf = %h", mosi_buf, in_buf);
                 end 
                 else begin
                     mosi_buf <= mosi_buf; // Do nothing
-                    
                 end
 
                 if (cnt > 0 && cnt < 17) begin
