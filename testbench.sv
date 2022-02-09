@@ -67,7 +67,7 @@ module spi_master_tb;
         cs = 0;
         
         // write data 
-        #20 ;
+        #25 ;
         wr = 0;
         cs = 1;
 
