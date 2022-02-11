@@ -81,7 +81,7 @@ module spi_slave(
                     in_buf <= in_buf << 1;
                 end 
                 else begin
-                    miso_buf <= mosi_buf; // Do nothing
+                    miso_buf <= miso_buf; // Do nothing
                 end
 
                 if (cnt > 0 && cnt < 17) begin

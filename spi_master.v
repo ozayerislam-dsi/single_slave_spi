@@ -29,39 +29,25 @@ module spi_master(
     output reg[7:0] out_data,
     output mosi,
     input miso,
-    inout sclk
+    output sclk
     );
     
     // --------define internal register and buffer--------
     // output buffer stage
-    reg sclk_buf = 0; // SCLK buffer
+    reg sclk_buf = 0; // SCLK buffer 
     reg mosi_buf = 0; // MOSI Buffer
  
     reg busy = 0; // when set to 0, READ/WRITE state, otherwise Shift/Buffer state 
     reg[7:0] in_buf = 0; // shift register, Buffer that saves the input data For MOSI
     reg[7:0] out_buf = 0; // shift register, Buffer that saves the output data For MISO
-
     reg[4:0] cnt = 0; // Variable to keep count of sclk 
     // --------------------------------------------------
 
     // the port of module links internal buffer
-    assign sclk = sclk_buf;
-    assign mosi = mosi_buf;
+    assign sclk = sclk_buf; // sclk for master and slave
+    assign mosi = mosi_buf; // mosi bits
     
-    //sclk negetive edge read data into out-shift register from miso , implement read operation
-    always @(negedge sclk_buf) begin
-        out_buf[0] <= miso;
-        out_buf <= out_buf << 1;
-    end 
 
-    // read data (combinatorial logic that level sensitive , detect all input)
-    always @(cs or wr or rd or out_buf or busy) begin
-        out_data = 8'bx;
-        if (!cs && rd) begin
-            out_data = out_buf;
-        end
-    end
-    
     // sclk positive edge write data to mosi
     always @(posedge clk) begin
         if (!busy) begin // idle state load data into send buffer
@@ -101,9 +87,19 @@ module spi_master(
                 cnt <= cnt + 1; // Keep Counting
         end 
     end
-
-
     
+    //sclk negetive edge read data into out-shift register from miso , implement read operation
+    always @(negedge sclk_buf) begin
+        out_buf[0] <= miso;
+        out_buf <= out_buf << 1;
+    end 
 
-
+    // read data (combinatorial logic that level sensitive , detect all input)
+    always @(cs or wr or rd or out_buf or busy) begin
+        out_data = 8'bx;
+        if (!cs && rd) begin
+            out_data = out_buf;
+        end
+    end
+   
 endmodule
