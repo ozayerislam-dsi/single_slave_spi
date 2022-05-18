@@ -35,6 +35,7 @@ module spi_master(
     // --------define internal register and buffer--------
     // output buffer stage
     reg sclk_buf = 0; // SCLK buffer 
+    reg demo = 1; // changes made in B1 branch
     reg mosi_buf = 0; // MOSI Buffer
  
     reg busy = 0; // when set to 0, READ/WRITE state, otherwise Shift/Buffer state 
